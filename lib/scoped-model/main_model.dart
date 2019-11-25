@@ -1,4 +1,5 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'package:rxdart/subjects.dart';
 
 import '../models/tictactoe_master_board.dart';
 
@@ -9,6 +10,9 @@ class MainModel extends Model {
   bool initTicTac = false;
   int nextBoardRow;
   int nextBoardColumn;
+  PublishSubject<bool> _userSubject = PublishSubject();
+
+
 
   String getTileAt(int boardRowNumber, int boardColumnNumber, int rowNumber,
       int columnNumber) {

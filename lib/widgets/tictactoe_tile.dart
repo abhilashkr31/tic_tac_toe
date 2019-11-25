@@ -9,11 +9,12 @@ class TicTacToeTile extends StatefulWidget {
   final int boardColumnNumber;
   final int rowNumber;
   final int columnNumber;
+  final Function _boardCallback;
 
   final MainModel model;
 
   TicTacToeTile(this.model, this.boardRowNumber, this.boardColumnNumber,
-      this.rowNumber, this.columnNumber);
+      this.rowNumber, this.columnNumber, this._boardCallback);
 
   @override
   State<StatefulWidget> createState() {
@@ -41,38 +42,37 @@ class _TicTacToeTile extends State<TicTacToeTile> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<MainModel>(
-      builder: (BuildContext context, Widget child, MainModel model) {
-        return Container(
-          width: _getTileSize(context),
-          height: _getTileSize(context),
-          decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-          child: RaisedButton(
-            color: Colors.white,
-            child: Text(widget.tileValue),
-            onPressed: widget.model.getClickState(
+    return Container(
+      width: _getTileSize(context),
+      height: _getTileSize(context),
+      padding: EdgeInsets.all(0.0),
+      child: InkWell(
+        child: Text("X"),
+        onTap: () {
+            setState(() {
+              if (widget.model.getClickState(
+                  widget.boardRowNumber,
+                  widget.boardColumnNumber,
+                  widget.rowNumber,
+                  widget.columnNumber)) {
+                if (widget.model.getBoardStatus(
+                    widget.boardRowNumber, widget.boardColumnNumber)) {
+                  widget._boardCallback();
+                }
+                widget.model.setTileAt(
                     widget.boardRowNumber,
                     widget.boardColumnNumber,
                     widget.rowNumber,
-                    widget.columnNumber)
-                ? () {
-                    setState(() {
-                      model.setTileAt(
-                          widget.boardRowNumber,
-                          widget.boardColumnNumber,
-                          widget.rowNumber,
-                          widget.columnNumber);
-                      widget.tileValue = model.getTileAt(
-                          widget.boardRowNumber,
-                          widget.boardColumnNumber,
-                          widget.rowNumber,
-                          widget.columnNumber);
-                    });
-                  }
-                : null,
-          ),
-        );
-      },
+                    widget.columnNumber);
+                widget.tileValue = widget.model.getTileAt(
+                    widget.boardRowNumber,
+                    widget.boardColumnNumber,
+                    widget.rowNumber,
+                    widget.columnNumber);
+              }
+            });
+          },
+      ),
     );
   }
 }
